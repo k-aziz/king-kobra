@@ -1,4 +1,4 @@
-import { InfoResponse, GameState, MoveResponse, Game } from "./types"
+import { InfoResponse, GameState, MoveResponse, Game, Coord } from "./types"
 
 export function info(): InfoResponse {
     console.log("INFO")
@@ -73,41 +73,14 @@ export function move(gameState: GameState): MoveResponse {
     // Use information in gameState to prevent your Battlesnake from colliding with itself.
     console.log(`HEAD - ${JSON.stringify({x: myHead.x, y: myHead.y})}`)
     let mybody = gameState.you.body
-    for (let body_coord of mybody) {
-      console.log(`BODY - ${JSON.stringify(body_coord)}`)
-
-      if (myHead.x === body_coord.x && (myHead.y + 1) === body_coord.y) {
-        possibleMoves.up = false;
-        console.log(
-          `Avoiding body: UP - \nbody coord: ${JSON.stringify(body_coord)}\n ${JSON.stringify(myHead)} - ${(myHead.x + 1, myHead.y)} ${(body_coord.x, body_coord.y)}`
-        )
-      }
-      if (myHead.x === body_coord.x && (myHead.y - 1) === body_coord.y) {
-        possibleMoves.down = false
-        console.log(
-          `Avoiding body: DOWN - \nbody coord: ${JSON.stringify(body_coord)}\n ${JSON.stringify(myHead)} - ${(myHead.x + 1, myHead.y)} ${(body_coord.x, body_coord.y)}`
-        )
-      }
-      if (myHead.y === body_coord.y && (myHead.x + 1) === body_coord.x) {
-        possibleMoves.right = false;
-        console.log(
-          `Avoiding body: RIGHT - \nbody coord: ${JSON.stringify(body_coord)}\n ${JSON.stringify(myHead)} - ${(myHead.x + 1, myHead.y)} ${(body_coord.x, body_coord.y)}`
-        )
-      }
-      if (myHead.y  === body_coord.y && (myHead.x - 1) === body_coord.x) {
-        possibleMoves.left = false;
-        console.log(
-          `Avoiding body: LEFT - \nbody coord: ${JSON.stringify(body_coord)}\n ${JSON.stringify(myHead)} - ${(myHead.x + 1, myHead.y)} ${(body_coord.x, body_coord.y)}`
-        )
-      }
-    }
+    possibleMoves = avoidHazards(myHead, mybody, possibleMoves, "BODY")
 
     console.log(`Body check ${JSON.stringify(possibleMoves)}`)
     console.log(`${JSON.stringify(myHead)}`)
 
     // TODO: Step 3 - Don't collide with others.
     // Use information in gameState to prevent your Battlesnake from colliding with others.
-    
+    // let snakes = gameState.board.snakes
     
 
     // TODO: Step 4 - Find food.
@@ -127,4 +100,37 @@ export function move(gameState: GameState): MoveResponse {
     }
     
     return response
+}
+
+function avoidHazards(myHead: Coord, hazardCoords: Coord[], possibleMoves: { [key: string]: boolean }, hazardName: string = "Hazard") {
+  for (let hazardCoord of hazardCoords) {
+    console.log(`${hazardName} - ${JSON.stringify(hazardCoord)}`)
+
+    if (myHead.x === hazardCoord.x && (myHead.y + 1) === hazardCoord.y) {
+      possibleMoves.up = false;
+      console.log(
+        `Avoiding ${hazardName}$: UP - \n${hazardName} coord: ${JSON.stringify(hazardCoord)}\n ${JSON.stringify(myHead)} - ${(myHead.x + 1, myHead.y)} ${(hazardCoord.x, hazardCoord.y)}`
+      )
+    }
+    if (myHead.x === hazardCoord.x && (myHead.y - 1) === hazardCoord.y) {
+      possibleMoves.down = false
+      console.log(
+        `Avoiding ${hazardName}: DOWN - \n${hazardName} coord: ${JSON.stringify(hazardCoord)}\n ${JSON.stringify(myHead)} - ${(myHead.x + 1, myHead.y)} ${(hazardCoord.x, hazardCoord.y)}`
+      )
+    }
+    if (myHead.y === hazardCoord.y && (myHead.x + 1) === hazardCoord.x) {
+      possibleMoves.right = false;
+      console.log(
+        `Avoiding ${hazardName}: RIGHT - \n${hazardName} coord: ${JSON.stringify(hazardCoord)}\n ${JSON.stringify(myHead)} - ${(myHead.x + 1, myHead.y)} ${(hazardCoord.x, hazardCoord.y)}`
+      )
+    }
+    if (myHead.y  === hazardCoord.y && (myHead.x - 1) === hazardCoord.x) {
+      possibleMoves.left = false;
+      console.log(
+        `Avoiding ${hazardName}: LEFT - \n${hazardName} coord: ${JSON.stringify(hazardCoord)}\n ${JSON.stringify(myHead)} - ${(myHead.x + 1, myHead.y)} ${(hazardCoord.x, hazardCoord.y)}`
+      )
+    }
+  }
+
+  return possibleMoves
 }
