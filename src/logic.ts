@@ -80,8 +80,12 @@ export function move(gameState: GameState): MoveResponse {
 
     // TODO: Step 3 - Don't collide with others.
     // Use information in gameState to prevent your Battlesnake from colliding with others.
-    // let snakes = gameState.board.snakes
-    
+    let snakes = gameState.board.snakes
+    snakes.forEach((snake, index) => {
+      let snake_body_coords = snake.body
+      possibleMoves = avoidHazards(myHead, snake_body_coords, possibleMoves, `SNEKK ${index}`)
+    });
+
 
     // TODO: Step 4 - Find food.
     // Use information in gameState to seek out and find food.
@@ -109,7 +113,7 @@ function avoidHazards(myHead: Coord, hazardCoords: Coord[], possibleMoves: { [ke
     if (myHead.x === hazardCoord.x && (myHead.y + 1) === hazardCoord.y) {
       possibleMoves.up = false;
       console.log(
-        `Avoiding ${hazardName}$: UP - \n${hazardName} coord: ${JSON.stringify(hazardCoord)}\n ${JSON.stringify(myHead)} - ${(myHead.x + 1, myHead.y)} ${(hazardCoord.x, hazardCoord.y)}`
+        `Avoiding ${hazardName}: UP - \n${hazardName} coord: ${JSON.stringify(hazardCoord)}\n ${JSON.stringify(myHead)} - ${(myHead.x + 1, myHead.y)} ${(hazardCoord.x, hazardCoord.y)}`
       )
     }
     if (myHead.x === hazardCoord.x && (myHead.y - 1) === hazardCoord.y) {
