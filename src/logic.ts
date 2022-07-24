@@ -1,15 +1,17 @@
 import { InfoResponse, GameState, MoveResponse, Game, Coord } from "./types"
 
+let infoResp: InfoResponse = {
+  apiversion: "1",
+  author: "Kash",
+  color: "#fc0355",
+  head: "all-seeing",
+  tail: "mystic-moon",
+}
+
+
 export function info(): InfoResponse {
     console.log("INFO")
-    const response: InfoResponse = {
-        apiversion: "1",
-        author: "Kash",
-        color: "#fc0355",
-        head: "all-seeing",
-        tail: "mystic-moon",
-    }
-    return response
+    return infoResp
 }
 
 export function start(gameState: GameState): void {
@@ -31,6 +33,8 @@ export function move(gameState: GameState): MoveResponse {
     }
     // console.log(`Initial moves ${JSON.stringify(possibleMoves)}`)
 
+    let randomColor = Math.floor(Math.random()*16777215).toString(16);
+    infoResp.color = `#${randomColor}`
 
     // Step 0: Don't let your Battlesnake move back on it's own neck
     const myHead = gameState.you.head
@@ -81,10 +85,14 @@ export function move(gameState: GameState): MoveResponse {
     // TODO: Step 3 - Don't collide with others.
     // Use information in gameState to prevent your Battlesnake from colliding with others.
     let snakes = gameState.board.snakes
-    snakes.forEach((snake, index) => {
+    for (let snake of snakes) {
+      if (snake.id === gameState.you.id) {
+        continue;
+      }
+
       let snake_body_coords = snake.body
-      possibleMoves = avoidHazards(myHead, snake_body_coords, possibleMoves, `SNEKK ${index}`)
-    });
+      possibleMoves = avoidHazards(myHead, snake_body_coords, possibleMoves, `SNEKK ${snake.id} - ${snake.name}`)
+    }
 
 
     // TODO: Step 4 - Find food.
