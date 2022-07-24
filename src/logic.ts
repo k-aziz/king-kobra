@@ -32,9 +32,6 @@ export function move(gameState: GameState): MoveResponse {
     }
     // console.log(`Initial moves ${JSON.stringify(possibleMoves)}`)
 
-    let randomColor = Math.floor(Math.random()*16777215).toString(16);
-    gameState.you.customizations.color = `#${randomColor}`
-
     // Step 0: Don't let your Battlesnake move back on it's own neck
     const myHead = gameState.you.head
     const myNeck = gameState.you.body[1]
