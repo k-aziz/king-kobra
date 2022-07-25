@@ -1,0 +1,8 @@
+.DS_Store
+.cmd
+.idea
+.vscode
+node_modules
+build
+.dockerignore
+Dockerfile
